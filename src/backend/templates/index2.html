@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Document</title>
+</head>
+<body>
+    <form>
+        <label for="textField" class="form-label">Title</label>
+        <br>
+        <textarea
+            class="input-field"
+            rows="1"
+            placeholder="Update the Title"
+            v-model="title"
+            required
+        ></textarea>
+        <br>
+        <label for="textField" class="form-label">Description</label>
+        <br>
+        <textarea
+            class="input-field"
+            rows="10"
+            placeholder="Update the Description"
+            v-model="text"
+            required
+        ></textarea>
+        <br>
+        <button class="btn save-btn primary-btn" title="To save text" @click="saveText">
+            Update <i class="fas fa-save"></i>
+        </button>
+    </form>
+</body>
+</html>
