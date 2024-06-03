@@ -1,4 +1,5 @@
-<template>
+Notes:
+    <!-- <template>
   <Navbar />
   <div class="page-container">
     <div class="content-wrap">
@@ -99,16 +100,7 @@ function generateUniqueId() {
   return '_' + Math.random().toString(36).substr(2, 9).toString();
 }
 
-onMounted(async () => {
-  try {
-    const response = await axios.get('http://localhost:1024/notes');
-    if (response.status === 200) {
-      notes.value = response.data;
-    }
-  } catch (error) {
-    console.error('Error fetching notes:', error);
-  }
-
+onMounted(() => {
   let data = localStorage.getItem('user-info');
   if (!data) {
     router
@@ -140,85 +132,4 @@ const copyText = () => {
     }, 750);
   }
 };
-</script>
-
-
-<style scoped>
-body {
-  margin: 0;
-  padding: 0;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-}
-
-.page-container {
-  min-height: 100vh;
-}
-
-.page-container .content-wrap {
-  margin-left: 60px;
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.mb-3 {
-  margin-bottom: 1rem;
-}
-
-.form-label {
-  margin-bottom: 1rem;
-}
-
-.input-field {
-  width: 90%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
-  resize: vertical;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  margin-right: 20px;
-}
-
-.primary-btn {
-  background-color: white;
-  color: blue;
-  border-radius: 0.25rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid #007bff;
-}
-
-.primary-btn:hover {
-  background-color: blue;
-  color: white;
-}
-
-.delete-btn {
-  border: 1px solid red;
-  background-color: white;
-  color: red;
-}
-
-.delete-btn:hover {
-  background-color: red;
-  color: white;
-}
-
-.clicked {
-  background-color: rgb(15, 195, 15);
-  color: white;
-}
-</style>
-
-
-
-
+</script> -->

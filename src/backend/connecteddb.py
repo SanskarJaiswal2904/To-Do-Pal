@@ -4,11 +4,12 @@ from flask_cors import CORS
 import datetime
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app, resources={r"/*": {"origins": "*"}})  # Enable CORS for all routes and origins
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/todopal"
 db = PyMongo(app).db
 
+#createSignup
 @app.route("/signup", methods=["POST"])
 def insertDB():
     data = request.get_json()
@@ -37,11 +38,13 @@ def insertDB():
     db.user_info.insert_one(user)
     return jsonify({"message": "done successfully"}), 201
 
+#getSignup
 @app.route("/signup", methods=["GET"])
 def get_all_users():
     users = list(db.user_info.find({}, {"_id": 0}))
     return jsonify(users)
 
+#Login
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -54,10 +57,11 @@ def login():
     else:
         return jsonify({"error": "Invalid email or password"}), 401
 
-# New route to save notes
+#postNotes
 @app.route("/notes", methods=["POST"])
 def save_note():
     data = request.get_json()
+    id = data.get('_id')
     title = data.get('title')
     description = data.get('description')
 
@@ -65,6 +69,7 @@ def save_note():
         return jsonify({"error": "Title and description are required."}), 400
 
     note = {
+        "_id": id,
         "title": title,
         "description": description,
         "datecreated": datetime.datetime.utcnow()
@@ -73,10 +78,10 @@ def save_note():
     db.note_data.insert_one(note)
     return jsonify({"message": "Note saved successfully"}), 201
 
-# New route to get all notes
+#getNotes
 @app.route("/notes", methods=["GET"])
 def get_notes():
-    notes = list(db.note_data.find({}, {"_id": 1}))
+    notes = list(db.note_data.find({}, {"_id": 1, "title": 1, "description": 1, "datecreated": 1}))
     return jsonify(notes)
 
 #deleteAll
@@ -88,17 +93,37 @@ def delete_all_notes():
     else:
         return jsonify({"error": "No notes found to delete"}), 404
     
-
 #deleteOne
-@app.route("/notes/deleteone/<int:sno>", methods=["DELETE"])
+@app.route("/notes/deleteone/<string:sno>", methods=["DELETE"])
 def delete_one_note(sno):
-    note = db.note_data.find_one({"sno": sno})
+    note = db.note_data.find_one({"_id": sno})
     if note:
-        db.note_data.delete_one({"sno": sno})
-        return jsonify({"message": f"Note with serial number {sno} deleted successfully"}), 200
+        db.note_data.delete_one({"_id": sno})
+        return jsonify({"message": f"Note with id {sno} deleted successfully"}), 200
     else:
-        return jsonify({"error": f"No note found with serial number {sno}"}), 404
+        return jsonify({"error": f"No note found with id {sno}"}), 404
 
+#updateOne
+@app.route("/notes/update/<string:sno>", methods=["PATCH"])
+def update_one_note(sno):
+    data = request.get_json()
+    title = data.get('title')
+    description = data.get('description')
+
+    # Validation
+    if not title or not description:
+        return jsonify({"error": "Title and description are required."}), 400
+
+    # Find the note by _id and update it
+    result = db.note_data.update_one(
+        {"_id": sno},  # Using the string _id field
+        {"$set": {"title": title, "description": description, "dateupdated": datetime.datetime.utcnow()}}
+    )
+
+    if result.matched_count > 0:
+        return jsonify({"message": f"Note with id {sno} updated successfully"}), 200
+    else:
+        return jsonify({"error": f"No note found with id {sno}"}), 404
 
 if __name__ == "__main__":
     app.run(debug=True, port=1024)
