@@ -1,4 +1,7 @@
 Notes:
+  gunicorn: help us to serve our application in multiple threads 
+
+
     <!-- <template>
   <Navbar />
   <div class="page-container">
