@@ -1,9 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from flask_cors import CORS
-import datetime
 from bson import ObjectId  # Import ObjectId for converting string to ObjectId
-
+import datetime
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["http://localhost:5173"]}})  # Allow requests from your Vue app's origin
@@ -11,7 +10,7 @@ CORS(app, resources={r"/*": {"origins": ["http://localhost:5173"]}})  # Allow re
 app.config["MONGO_URI"] = "mongodb://localhost:27017/todopal"
 db = PyMongo(app).db
 
-#createSignup
+# createSignup
 @app.route("/signup", methods=["POST"])
 def insertDB():
     data = request.get_json()
@@ -38,22 +37,22 @@ def insertDB():
     }
 
     db.user_info.insert_one(user)
-    return jsonify({"message": "done successfully"}), 201
+    return jsonify({"message": "Signup successful"}), 201
 
-#Login
+# Login
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
 
-    user = db.user_info.find_one({"email": email, "password": password})
-    if user:
+    user = db.user_info.find_one({"email": email})
+    if user and user['password'] == password:
         return jsonify({"message": "Login successful"}), 200
     else:
         return jsonify({"error": "Invalid email or password"}), 401
 
-#postNotes
+# Post Notes
 @app.route("/notes", methods=["POST"])
 def save_note():
     data = request.get_json()
@@ -74,13 +73,15 @@ def save_note():
     db.note_data.insert_one(note)
     return jsonify({"message": "Note saved successfully"}), 201
 
-#getNotes
+# Get Notes
 @app.route("/notes", methods=["GET"])
 def get_notes():
     notes = list(db.note_data.find({}, {"_id": 1, "title": 1, "description": 1, "datecreated": 1}))
+    for note in notes:
+        note["_id"] = str(note["_id"])
     return jsonify(notes)
 
-#deleteAll
+# Delete All Notes
 @app.route("/notes/deleteall", methods=["DELETE"])
 def delete_all_notes():
     result = db.note_data.delete_many({})
@@ -88,18 +89,18 @@ def delete_all_notes():
         return jsonify({"message": "All notes deleted successfully"}), 200
     else:
         return jsonify({"error": "No notes found to delete"}), 404
-    
-#deleteOne
+
+# Delete One Note
 @app.route("/notes/deleteone/<string:sno>", methods=["DELETE"])
 def delete_one_note(sno):
     note = db.note_data.find_one({"_id": sno})
     if note:
         db.note_data.delete_one({"_id": sno})
-        return jsonify({"message": f"Note with id {sno} deleted successfully"}), 200
+        return jsonify({"message": f"Note with ID {sno} deleted successfully"}), 200
     else:
-        return jsonify({"error": f"No note found with id {sno}"}), 404
+        return jsonify({"error": f"No note found with ID {sno}"}), 404
 
-#updateOne
+# Update One Note
 @app.route("/notes/update/<string:sno>", methods=["PATCH"])
 def update_one_note(sno):
     data = request.get_json()
@@ -112,51 +113,42 @@ def update_one_note(sno):
 
     # Find the note by _id and update it
     result = db.note_data.update_one(
-        {"_id": sno},  # Using the string _id field
+        {"_id": sno},
         {"$set": {"title": title, "description": description, "dateupdated": datetime.datetime.utcnow()}}
     )
 
     if result.matched_count > 0:
-        return jsonify({"message": f"Note with id {sno} updated successfully"}), 200
+        return jsonify({"message": f"Note with ID {sno} updated successfully"}), 200
     else:
-        return jsonify({"error": f"No note found with id {sno}"}), 404
-    
+        return jsonify({"error": f"No note found with ID {sno}"}), 404
 
-#getAlltheUser
-# @app.route("/alluser", methods=["GET"])
-# def get_all_users():
-#     # users = list(db.user_info.find({}, {"_id": 1, "name" : 1, "email" : 1}))
-#     users = list(db.user_info.find({}, {"_id": 1, "name" : 1, "email" : 1}))
-#     # users = list(db.user_info.find({}, {"_id": 0}))
-#     # users = list(db.user_info.find())
-#     return jsonify(users)
-
-#getAlltheUser
+# Get All Users
 @app.route("/alluser", methods=["GET"])
 def get_all_users():
     try:
-        users = list(db.user_info.find({}, {"_id": 1, "name": 1, "email" : 1}))
+        users = list(db.user_info.find({}, {"_id": 1, "name": 1, "email": 1}))
+        for user in users:
+            user["_id"] = str(user["_id"])
         return jsonify(users)
     except Exception as e:
-        return e
+        print(f"Error fetching users: {str(e)}")  # Log the error to the server console
+        return jsonify({"error": "An error occurred while fetching users."}), 500
 
-# deleteUser
+# Delete User
 @app.route("/deleteUser/<string:sno>", methods=["DELETE"])
 def delete_user(sno):
     try:
-        user_to_delete = db.user_info.find_one({"_id": ObjectId(sno)})
+        user_id = ObjectId(sno)
+    except Exception:
+        return jsonify({"error": "Invalid user ID"}), 400
 
-        if user_to_delete:
-            db.user_info.delete_one({"_id": ObjectId(sno)})
-            return jsonify({"message": "User deleted successfully"}), 200
-        else:
-            return jsonify({"error": "User not found"}), 404
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-    
+    user_to_delete = db.user_info.find_one({"_id": user_id})
 
-
-
+    if user_to_delete:
+        db.user_info.delete_one({"_id": user_id})
+        return jsonify({"message": "User deleted successfully"}), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
 
 if __name__ == "__main__":
     app.run(debug=True, port=1024)

@@ -14,7 +14,7 @@
                   </router-link>
               </li>
               <li>
-                  <router-link class="nav-item nav-link" to="/admin">
+                  <router-link class="nav-item nav-link" to="/admn">
                       <i class="fas fa-user-shield"></i> Admin
                   </router-link>
               </li>

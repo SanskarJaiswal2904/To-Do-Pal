@@ -6,6 +6,7 @@ import About from '@/components/About.vue';
 import Admin from '@/components/Admin.vue';
 import Notes from "@/components/Notes.vue";
 import PageNotFound from"@/components/PageNotFound.vue";
+import NotAdmin from"@/components/NotAdmin.vue";
 
 const routes = [
     {
@@ -30,8 +31,13 @@ const routes = [
     },
     {
     name:'Admin',
-    path:'/admin',
+    path:'/admin/e5bf4517-412c',
     component:Admin
+    },
+    {
+    name:'notAdmin',
+    path:'/admn',
+    component:NotAdmin
     },
     {
     name: 'PageNotFound',

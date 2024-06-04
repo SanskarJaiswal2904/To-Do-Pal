@@ -11,7 +11,9 @@ node_modules
 .DS_Store
 dist
 dist-ssr
+mongouser.json
 mongo.json
+note.txt
 coverage
 *.local
 
