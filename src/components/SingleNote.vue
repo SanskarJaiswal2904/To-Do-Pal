@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="item in items" :key="item._id">
+            <tr v-for="item in items" :key="item._id" class="note-card">
                 <td>{{ item._id }}</td>
                 <td>{{ item.title }}</td>
                 <td>{{ item.description }}</td>
@@ -29,7 +29,7 @@
             </tr>
         </tbody>
     </table>
-    <!-- Update Modal -->
+    <!-- Update Modal  -->
     <div v-if="showModal" class="modal">
         <div class="modal-content">
             <span class="close" @click="closeModal">&times;</span>
@@ -103,6 +103,7 @@ export default {
                     // Handle success
                     console.log(`Note ${sno} deleted successfully`);
                     // Perform any additional actions if needed
+                    location.reload();
                 }
             } catch (error) {
                 // Handle error
@@ -127,6 +128,7 @@ export default {
                 if (response.status === 200) {
                     console.log(`Note ${this.currentNote._id} updated successfully`);
                     this.closeModal();
+                    location.reload();
                     this.$emit('update-notes');
                 }
             } catch (error) {
@@ -139,6 +141,19 @@ export default {
 
   
 <style scoped>
+.note-card:hover {
+    animation: elevate 0.2s ease-in-out;
+    transform: scale(1.02); 
+  }
+  
+  @keyframes elevate {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.02);
+    }
+  }
 .bigClass {
     background-color: rgb(255, 210, 210);
     color: red;

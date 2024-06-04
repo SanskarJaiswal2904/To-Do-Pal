@@ -20,10 +20,7 @@
               </li>
           </div>
           <div class="item2">
-              <form class="nav-search-form" @submit.prevent="handleSearch">
-                  <input type="text" v-model="searchNote" name="searchNote" placeholder="Enter something to search" />
-                  <button type="submit" v-on:click="handleSearch"> Search </button>
-              </form>
+              
 
               <li class="nav-item nav-link logoutClass" v-on:click="logout">
                   <i class="fas fa-sign-out-alt"></i> Logout
@@ -34,37 +31,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import { pinia } from '../main'; // Import Pinia instance
 
-const searchNote = ref('');
 
 const logout = () =>{
   console.log("Logging out");
   localStorage.clear();
   window.location.reload();
   pinia.state.value.isLoggedIn = false;
-}
-
-const handleSearch = () => {
-  console.log(searchNote.value);
-  const query = searchNote.value.toLowerCase();
-  let found = false;
-
-  for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      const value = localStorage.getItem(key).toLowerCase();
-
-      if (value.includes(query)) {
-          console.log(`Note found: ${value}`);
-          found = true;
-          break;
-      }
-  }
-
-  if (!found) {
-      console.log('No matching notes found.');
-  }
 };
 </script>
 

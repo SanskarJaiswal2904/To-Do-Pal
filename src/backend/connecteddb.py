@@ -2,9 +2,11 @@ from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 import datetime
+from bson import ObjectId  # Import ObjectId for converting string to ObjectId
+
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})  # Enable CORS for all routes and origins
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5173"]}})  # Allow requests from your Vue app's origin
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/todopal"
 db = PyMongo(app).db
@@ -37,12 +39,6 @@ def insertDB():
 
     db.user_info.insert_one(user)
     return jsonify({"message": "done successfully"}), 201
-
-#getSignup
-@app.route("/signup", methods=["GET"])
-def get_all_users():
-    users = list(db.user_info.find({}, {"_id": 0}))
-    return jsonify(users)
 
 #Login
 @app.route("/login", methods=["POST"])
@@ -124,6 +120,43 @@ def update_one_note(sno):
         return jsonify({"message": f"Note with id {sno} updated successfully"}), 200
     else:
         return jsonify({"error": f"No note found with id {sno}"}), 404
+    
+
+#getAlltheUser
+# @app.route("/alluser", methods=["GET"])
+# def get_all_users():
+#     # users = list(db.user_info.find({}, {"_id": 1, "name" : 1, "email" : 1}))
+#     users = list(db.user_info.find({}, {"_id": 1, "name" : 1, "email" : 1}))
+#     # users = list(db.user_info.find({}, {"_id": 0}))
+#     # users = list(db.user_info.find())
+#     return jsonify(users)
+
+#getAlltheUser
+@app.route("/alluser", methods=["GET"])
+def get_all_users():
+    try:
+        users = list(db.user_info.find({}, {"_id": 1, "name": 1, "email" : 1}))
+        return jsonify(users)
+    except Exception as e:
+        return e
+
+# deleteUser
+@app.route("/deleteUser/<string:sno>", methods=["DELETE"])
+def delete_user(sno):
+    try:
+        user_to_delete = db.user_info.find_one({"_id": ObjectId(sno)})
+
+        if user_to_delete:
+            db.user_info.delete_one({"_id": ObjectId(sno)})
+            return jsonify({"message": "User deleted successfully"}), 200
+        else:
+            return jsonify({"error": "User not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=1024)

@@ -163,7 +163,7 @@ body {
   margin-top: 30px;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 30vh;
 }
 
 .mb-3 {
