@@ -1,9 +1,6 @@
 <template>
   <div id="app">
-    <!-- Navbar will be rendered if user is logged in -->
-    <!-- <Navbar/> -->
 
-    <!-- Router view for rendering components based on route -->
     <router-view/>
   </div>
 </template>

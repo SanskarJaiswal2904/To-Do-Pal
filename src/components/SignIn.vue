@@ -3,7 +3,7 @@
     <div class="image-container">
       <img src="../assets/todopalLogo.png" alt="Website Logo" width="200px" class="centered-image">
     </div>
-    <h1>Login Page</h1>
+    <h1>Login</h1>
 
     <form @submit.prevent="handleLogin">
       <label for="email" name="Email">Email</label>

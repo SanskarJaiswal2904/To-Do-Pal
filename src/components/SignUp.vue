@@ -3,7 +3,7 @@
         <div class="image-container">
             <img src="../assets/todopalLogo.png" alt="Website Logo" width="200px" class="centered-image">
         </div>
-        <h1>Sign Up Page</h1>
+        <h1>Sign Up </h1>
         <form @submit.prevent="handleSignUp">
             <label for="name" name="Name">Name</label>
             <input type="text" placeholder="Enter your Name" v-model="name" name="name" class="input-field" required>

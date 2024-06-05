@@ -20,7 +20,10 @@
               </li>
           </div>
           <div class="item2">
-              
+            <form class="nav-search-form">
+              <input type="text" placeholder="Search...">
+              <button type="submit">Search</button>
+          </form>
 
               <li class="nav-item nav-link logoutClass" v-on:click="logout">
                   <i class="fas fa-sign-out-alt"></i> Logout
