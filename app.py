@@ -5,7 +5,7 @@ from bson import ObjectId  # Import ObjectId for converting string to ObjectId
 import datetime
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["http://localhost:5173"]}})  # Allow requests from your Vue app's origin
+CORS(app, resources={r"/*": {"origins": ["https://to-do-pal.vercel.app"]}})  # Allow requests from your Vue app's origin
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/todopal"
 db = PyMongo(app).db
